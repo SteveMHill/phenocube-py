@@ -172,3 +172,69 @@ def plot_rgb(dataset, bands=['blue','green','red'], dims = ['x','y'], height = 7
 
     col = pn.Row(pn.Column(pn.WidgetBox(r_select, g_select, b_select, time_select)), combine_bands(r = r_select.value,b = b_select.value,g = g_select.value, time = time_select.value))
     return col
+
+def spectral_analyze(dataset, timeindex = 0, bands = ['red', 'green','blue'], dims = ['x','y'], height = 500, width = 500, clims = None, norm = 'eq_hist', cmap=['black', 'white'], nodata = 1):
+
+
+    """Interactivly visualize the spectral profile of single pixels in a multi-band xarray dataset
+
+    Description
+    ----------
+    Takes an xarray dataset and creates an interactive panel which allows to inspect the spectral profile for each pixel in a multi-band xarray dataset
+
+    Parameters
+    ----------
+    dataset : xarray.Dataset
+        A multi-dimensional array with x,y and time dimensions and one or more data variables.
+    timeindex : int
+        Integer value used to select one time step from the input dataset for plotting.
+    bands: int, str
+        A list of names defining the data variables used for the red, green and blue band
+    dim : list, str
+        A list containing the names of the x and y dimension.
+    height: int
+        Height of the created plot specified in pixels.
+    width: int
+        Width of the created plot specified in pixels.
+    clims: int,float
+        Min and max data values to use for colormap interpolation.
+    norm :
+        The normalization operation applied before colormapping. Valid options include 'linear', 'log', 'eq_hist', 'cbrt'.
+    cmap : list, str
+        Used for the colormap of single-layer datashader output.
+    nodata: int
+        Value defining the nodata value for the dataset
+
+    """
+
+    timestep = str(dataset.time.values[timeindex])
+
+    list_vars = []
+    for var in dataset.data_vars:
+        list_vars.append(var)
+
+    x = np.mean(dataset.x.values)
+    y = np.mean(dataset.y.values)
+
+    def combine_bands():
+        xs, ys = dataset[bands[0]].sel(time = timestep)[dims[0]], dataset[bands[0]].sel(time = timestep)[dims[1]]
+        r, g, b = [ds.utils.orient_array(img) for img in (dataset[bands[0]].sel(time = timestep), dataset[bands[1]].sel(time = timestep), dataset[bands[2]].sel(time = timestep))]
+        a = (np.where(np.logical_or(np.isnan(r),r<=nodata),0,255)).astype(np.uint8)
+        r = (normalize_data(r)).astype(np.uint8)
+        g = (normalize_data(g)).astype(np.uint8)
+        b = (normalize_data(b)).astype(np.uint8)
+        return regrid(hv.RGB((xs, ys[::-1], r, g, b, a), vdims=list('RGBA'))).redim(x=dims[0], y=dims[1])
+
+    def spectrum(x, y):
+        try:
+            values = []
+            for b in list_vars:
+                values.append(dataset[b].sel(x=x,y=y,time=timestep, method="nearest").values)
+        except:
+            values = np.zeros(11)
+        return hv.Curve(values)
+
+    tap = hv.streams.PointerXY(x = x,y = y)
+    spectrum_curve = hv.DynamicMap(spectrum, streams=[tap])
+
+    return  combine_bands() * spectrum_curve
