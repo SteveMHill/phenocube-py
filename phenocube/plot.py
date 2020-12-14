@@ -214,8 +214,8 @@ def spectral_analyze(dataset, timeindex = 0, bands = ['red', 'green','blue'], di
     for var in dataset.data_vars:
         list_vars.append(var)
 
-    x = np.mean(dataset.x.values)
-    y = np.mean(dataset.y.values)
+    x = np.mean(dataset[dims[0]].values)
+    y = np.mean(dataset[dims[1]].values)
 
     def combine_bands():
         xs, ys = dataset[bands[0]].sel(time = timestep)[dims[0]], dataset[bands[0]].sel(time = timestep)[dims[1]]
