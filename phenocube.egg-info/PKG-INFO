@@ -1,0 +1,44 @@
+Metadata-Version: 1.1
+Name: phenocube
+Version: 0.1.0
+Summary: phenocube is an python package providing a wide range of tools for working with the phenocube environment
+Home-page: https://github.com/phenocube/phenocube-py
+Author: Steven Hill
+Author-email: steven.hill@uni-wuerzburg.de
+License: MIT
+Description: phenocube
+        =========
+        
+        phenocube is an python package providing a wide range of tools for working with the phenocube environment
+        
+        Usage
+        -----
+        
+        Installation
+        ------------
+        
+        Requirements
+        ^^^^^^^^^^^^
+        
+        Compatibility
+        -------------
+        
+        Licence
+        -------
+        
+        Authors
+        -------
+        
+        `phenocube` was written by `Steven Hill <steven.hill@uni-wuerzburg.de>`_.
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7

@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "phenocube"
+version = "0.1.0"
+description = "phenocube is an python package providing a wide range of tools for working with the open datacube environment"
+authors = ["SteveMHill <steven.smhill@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+xarray = "^0.16.2"
+rasterio = "^1.1.8"
+dask = "^2020.12.0"
+numpy = "^1.19.4"
+folium = "^0.11.0"
+geopandas = "^0.8.1"
+holoviews = "^1.14.0"
+panel = "^0.10.2"
+datashader = "^0.11.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.0"
+mypy = "^0.790"
+Sphinx = "^3.3.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -4,9 +4,12 @@ import dask
 from IPython.display import display
 from datacube.utils.dask import start_local_dask
 
-_HAVE_PROXY = bool(find_spec('jupyter_server_proxy'))
+_HAVE_PROXY = bool(find_spec("jupyter_server_proxy"))
 
-def create_local_dask_cluster(workers = 1, threads = None,  mem_limit=None, spare_mem='20Gb', display_client=True):
+
+def create_local_dask_cluster(
+    workers=1, threads=None, mem_limit=None, spare_mem="20Gb", display_client=True
+):
     """
     Using the datacube utils function `start_local_dask`, generate
     a local dask cluster.
@@ -30,12 +33,16 @@ def create_local_dask_cluster(workers = 1, threads = None,  mem_limit=None, spar
 
     if _HAVE_PROXY:
         # Configure dashboard link to go over proxy
-        prefix = os.environ.get('JUPYTERHUB_SERVICE_PREFIX', '/')
-        dask.config.set({"distributed.dashboard.link":
-                         prefix + "proxy/{port}/status"})
+        prefix = os.environ.get("JUPYTERHUB_SERVICE_PREFIX", "/")
+        dask.config.set({"distributed.dashboard.link": prefix + "proxy/{port}/status"})
 
     # Start up a local cluster
-    client = start_local_dask(n_workers = workers,threads_per_worker = threads, memory_limit = mem_limit,  mem_safety_margin=spare_mem)
+    client = start_local_dask(
+        n_workers=workers,
+        threads_per_worker=threads,
+        memory_limit=mem_limit,
+        mem_safety_margin=spare_mem,
+    )
 
     # Show the dask cluster settings
     if display_client:

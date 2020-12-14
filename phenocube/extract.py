@@ -51,10 +51,10 @@ def extract(dataset, gpd, bands, func="raw", na_rm=True):
         example = extract(dataset, gpd, bands = ["blue", "green", "red"], func = "mean")
         example["scene_index_0"]
 
-        """
+    """
 
-    warnings.filterwarnings("ignore") # ignore warnings for nan values
-    
+    warnings.filterwarnings("ignore")  # ignore warnings for nan values
+
     results_scenes = {}  # empty array for storring all bandvalues for a single scene
     index = gpd.index  # creates array of indexes of the polygones
 
@@ -64,21 +64,27 @@ def extract(dataset, gpd, bands, func="raw", na_rm=True):
         results_df = {}  # empty array for storing band values
         for i in index:
             vec = gpd.loc[i]
-            ShapeMask = rasterio.features.geometry_mask(vec["geom"],
-                                                        # selects geometry of the desired gpd and forms a boolean mask from it
-                                                        out_shape=(len(scene.latitude), len(scene.longitude)),
-                                                        transform=scene.geobox.transform,
-                                                        invert=True)
-            ShapeMask = xr.DataArray(ShapeMask,
-                                     dims=("latitude", "longitude"))  # converts boolean mask into an xArray format
+            ShapeMask = rasterio.features.geometry_mask(
+                vec["geom"],
+                # selects geometry of the desired gpd and forms a boolean mask from it
+                out_shape=(len(scene.latitude), len(scene.longitude)),
+                transform=scene.geobox.transform,
+                invert=True,
+            )
+            ShapeMask = xr.DataArray(
+                ShapeMask, dims=("latitude", "longitude")
+            )  # converts boolean mask into an xArray format
 
             masked_dataset = scene.where(
-                ShapeMask == True)  # combines mask and dataset so only the pixels within the gpd polygons are still valid
+                ShapeMask == True
+            )  # combines mask and dataset so only the pixels within the gpd polygons are still valid
 
             results = {}
             for j in bands:
                 values = masked_dataset[j].values
-                if na_rm == True:  # if na remove argument is true remove all nan values before storing the array
+                if (
+                    na_rm == True
+                ):  # if na remove argument is true remove all nan values before storing the array
                     values = values[np.logical_not(np.isnan(values))]
                     if func == "raw":  # stores "raw" values
                         results[j] = pd.DataFrame({i: [values]})
@@ -96,7 +102,9 @@ def extract(dataset, gpd, bands, func="raw", na_rm=True):
                         results[j] = pd.DataFrame({i: [std]})
                 else:  # keeps all nan values
                     if func == "raw":  # stores "raw" values
-                        results[j] = pd.DataFrame({i: [values]})  # stores the array with nan values
+                        results[j] = pd.DataFrame(
+                            {i: [values]}
+                        )  # stores the array with nan values
                     elif func == "mean":  # calculates mean and stores mean value
                         mean = np.nanmean(values)  # eliminates nan values
                         results[j] = pd.DataFrame({i: [mean]})
@@ -110,14 +118,20 @@ def extract(dataset, gpd, bands, func="raw", na_rm=True):
                         std = np.nanstd(values)
                         results[j] = pd.DataFrame({i: [std]})
 
-            vec_df = pd.concat(results, axis=1)  # concatenate all band values of a shape i to a data frame
+            vec_df = pd.concat(
+                results, axis=1
+            )  # concatenate all band values of a shape i to a data frame
             vec_df.columns = bands  # rename column names to band names
             vec_df["id"] = i  # add index of polygon
 
             results_df[str(i)] = vec_df  # store dataframe for in a dictionary
 
-        df = pd.concat(results_df, ignore_index=True)  # concatenate all dataframes for each shape to one dataframe
+        df = pd.concat(
+            results_df, ignore_index=True
+        )  # concatenate all dataframes for each shape to one dataframe
         df = df.set_index("id")  # sets index to shape index
-        results_scenes["scene_index_" + str(t)] = df  # store dataframe with raw pixel values into dict
+        results_scenes[
+            "scene_index_" + str(t)
+        ] = df  # store dataframe with raw pixel values into dict
 
     return results_scenes

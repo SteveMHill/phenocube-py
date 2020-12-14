@@ -1,7 +1,8 @@
 import xarray
 import pandas as pd
 
-def remove_empty_scenes(dataset, nodata=-9999, bands=['red'], dim=['x','y']):
+
+def remove_empty_scenes(dataset, nodata=-9999, bands=["red"], dim=["x", "y"]):
 
     """Remove time steps containing only no data values
 
@@ -30,7 +31,11 @@ def remove_empty_scenes(dataset, nodata=-9999, bands=['red'], dim=['x','y']):
     ts = len(dataset.time)
 
     for band in bands:
-        dataset.sel(time=pd.to_datetime(mean.time.where(mean[band] != nodata, drop=True).values.tolist()))
+        dataset.sel(
+            time=pd.to_datetime(
+                mean.time.where(mean[band] != nodata, drop=True).values.tolist()
+            )
+        )
 
     tsnew = len(dataset.time)
 

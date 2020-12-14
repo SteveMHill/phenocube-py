@@ -25,10 +25,11 @@ under the License.
 different classification types
 """
 
+
 def unpack_s2bits(s2_scl_endcoding, data_array, cover_type):
     """
     Description:
-        Unpack bits for mask boolean mask 
+        Unpack bits for mask boolean mask
     -----
     Input:
         land_cover_encoding(dict hash table) land cover endcoding provided by sen2cor scl
@@ -36,29 +37,33 @@ def unpack_s2bits(s2_scl_endcoding, data_array, cover_type):
         cover_type(String) type of cover
     Output:
         unpacked DataArray
-    
-    """
-    boolean_mask = np.isin(data_array.values, s2_scl_endcoding[cover_type]) 
-    return xr.DataArray(boolean_mask.astype(bool),
-                        coords = data_array.coords,
-                        dims = data_array.dims,
-                        name = cover_type + "_mask",
-                        attrs = data_array.attrs)
 
-def s2_unpack_scl(data_array , cover_type):
-    s2_scl_endcoding = dict(no_data                       =[0],
-                                saturated_or_defective        =[1],
-                                dark_area_pixels              =[2],
-                                cloud_shadows                 =[3],
-                                vegetation                    =[4],
-                                not_vegetated                 =[5],
-                                water                         =[6],
-                                unclassified                  =[7],
-                                cloud_medium_probability      =[8],
-                                cloud_high_probability        =[9],
-                                thin_cirrus                   =[10],
-                                snow                          =[11],
-                                cloud                         =[3,8,9,10],
-                                cloud_free                    =[4,5,6]
-                               )
+    """
+    boolean_mask = np.isin(data_array.values, s2_scl_endcoding[cover_type])
+    return xr.DataArray(
+        boolean_mask.astype(bool),
+        coords=data_array.coords,
+        dims=data_array.dims,
+        name=cover_type + "_mask",
+        attrs=data_array.attrs,
+    )
+
+
+def s2_unpack_scl(data_array, cover_type):
+    s2_scl_endcoding = dict(
+        no_data=[0],
+        saturated_or_defective=[1],
+        dark_area_pixels=[2],
+        cloud_shadows=[3],
+        vegetation=[4],
+        not_vegetated=[5],
+        water=[6],
+        unclassified=[7],
+        cloud_medium_probability=[8],
+        cloud_high_probability=[9],
+        thin_cirrus=[10],
+        snow=[11],
+        cloud=[3, 8, 9, 10],
+        cloud_free=[4, 5, 6],
+    )
     return unpack_s2bits(s2_scl_endcoding, data_array, cover_type)

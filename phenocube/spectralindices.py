@@ -1,4 +1,4 @@
-def spectralindices(dataset, indices = ['NDVI'], norm = True, drop = False):
+def spectralindices(dataset, indices=["NDVI"], norm=True, drop=False):
 
     """Calculate a suite of spectral indices
 
@@ -36,15 +36,37 @@ def spectralindices(dataset, indices = ['NDVI'], norm = True, drop = False):
     """
 
     index_dict = {
-        'NDVI': lambda dataset: (dataset.nir - dataset.red) / (dataset.nir + dataset.red),
-        'EVI': lambda dataset: ((2.5 * (dataset.nir - dataset.red)) / (dataset.nir + 6 * dataset.red - 7.5 * dataset.blue + 1)),
-        'LAI': lambda dataset: (3.618 * ((2.5 * (dataset.nir - dataset.red)) / (dataset.nir + 6 * dataset.red -7.5 * dataset.blue + 1)) - 0.118),
-        'SAVI': lambda dataset: ((1.5 * (dataset.nir - dataset.red)) / (dataset.nir + dataset.red + 0.5)),
-        'MSAVI': lambda dataset: ((2 * dataset.nir + 1 -((2 * dataset.nir + 1)**2 - 8 * (dataset.nir - dataset.red))**0.5) / 2),
-        'NBR': lambda dataset: (dataset.nir - dataset.swir2) / (dataset.nir + dataset.swir2),
-        'NDWI': lambda dataset: (dataset.green - dataset.nir) / (dataset.green + dataset.nir),
-        'MNDWI': lambda dataset: (dataset.green - dataset.swir1) / (dataset.green + dataset.swir1)
-
+        "NDVI": lambda dataset: (dataset.nir - dataset.red)
+        / (dataset.nir + dataset.red),
+        "EVI": lambda dataset: (
+            (2.5 * (dataset.nir - dataset.red))
+            / (dataset.nir + 6 * dataset.red - 7.5 * dataset.blue + 1)
+        ),
+        "LAI": lambda dataset: (
+            3.618
+            * (
+                (2.5 * (dataset.nir - dataset.red))
+                / (dataset.nir + 6 * dataset.red - 7.5 * dataset.blue + 1)
+            )
+            - 0.118
+        ),
+        "SAVI": lambda dataset: (
+            (1.5 * (dataset.nir - dataset.red)) / (dataset.nir + dataset.red + 0.5)
+        ),
+        "MSAVI": lambda dataset: (
+            (
+                2 * dataset.nir
+                + 1
+                - ((2 * dataset.nir + 1) ** 2 - 8 * (dataset.nir - dataset.red)) ** 0.5
+            )
+            / 2
+        ),
+        "NBR": lambda dataset: (dataset.nir - dataset.swir2)
+        / (dataset.nir + dataset.swir2),
+        "NDWI": lambda dataset: (dataset.green - dataset.nir)
+        / (dataset.green + dataset.nir),
+        "MNDWI": lambda dataset: (dataset.green - dataset.swir1)
+        / (dataset.green + dataset.swir1),
     }
 
     if drop:
@@ -60,11 +82,13 @@ def spectralindices(dataset, indices = ['NDVI'], norm = True, drop = False):
             else:
                 index_new = func(dataset / 1.0)
         except AttributeError:
-            raise ValueError('Missing bands: The data set does not seem to contain all bands needed to calculate this index')
+            raise ValueError(
+                "Missing bands: The data set does not seem to contain all bands needed to calculate this index"
+            )
 
         dataset[index] = index_new
 
     if drop:
         dataset = dataset.drop(drop_bands)
 
-    return(dataset)
+    return dataset

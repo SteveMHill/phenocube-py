@@ -1,7 +1,8 @@
 import geopandas as gpd
 import psycopg2
 
-def load_gdf(filename, cols = "all"):
+
+def load_gdf(filename, cols="all"):
     """
     Loads a vectordataset from the PostGIS database and stores it as a gpd.Geodataframe.
 
@@ -28,24 +29,33 @@ def load_gdf(filename, cols = "all"):
     gdf: gpd.GeoDataframe
         Geodataframe from PostGIS database with the defined or all columns.
 
-        """
-    
+    """
+
     # PostGIS credentials
-    user = 'dc_user'
-    password = 'localuser1234'
-    host = '127.0.0.1'
-    port = '5432'
-    database = 'datacube'
-    
-    connection = psycopg2.connect(database=database, user=user, password=password, host=host) # connection to PostGIS
+    user = "dc_user"
+    password = "localuser1234"
+    host = "127.0.0.1"
+    port = "5432"
+    database = "datacube"
+
+    connection = psycopg2.connect(
+        database=database, user=user, password=password, host=host
+    )  # connection to PostGIS
     if type(cols) is list:
-        sql = "select geom, gid, " + ", ".join(cols) + " from " + filename + ";" # define which attributes of shapefile should be included
-        gdf = gpd.GeoDataFrame.from_postgis(sql, connection) # creates GeoDataFrame from the sql table
+        sql = (
+            "select geom, gid, " + ", ".join(cols) + " from " + filename + ";"
+        )  # define which attributes of shapefile should be included
+        gdf = gpd.GeoDataFrame.from_postgis(
+            sql, connection
+        )  # creates GeoDataFrame from the sql table
     elif cols == "all":
-        sql = "select * from " + filename + ";" # define which attributes of shapefile should be included
-        gdf = gpd.GeoDataFrame.from_postgis(sql, connection) # creates GeoDataFrame from the sql table
-    
+        sql = (
+            "select * from " + filename + ";"
+        )  # define which attributes of shapefile should be included
+        gdf = gpd.GeoDataFrame.from_postgis(
+            sql, connection
+        )  # creates GeoDataFrame from the sql table
+
     connection.close()
-    
+
     return gdf
-    
