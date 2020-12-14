@@ -3,6 +3,7 @@ import xarray as xr
 import pandas as pd
 import numpy as np
 import geopandas as gpd
+import warnings
 
 
 def extract(dataset, gpd, bands, func="raw", na_rm=True):
@@ -52,6 +53,8 @@ def extract(dataset, gpd, bands, func="raw", na_rm=True):
 
         """
 
+    warnings.filterwarnings("ignore") # ignore warnings for nan values
+    
     results_scenes = {}  # empty array for storring all bandvalues for a single scene
     index = gpd.index  # creates array of indexes of the polygones
 
